@@ -5,6 +5,7 @@ import {
 } from "@apollo/client";
 import { Link } from "react-router-dom";
 //import { useEffect, useState } from "react";
+import styled from "styled-components";
 
 // useQuery hook을 사용하기 위해서 gql을 외부로 뺀다.
 // getMovies는 임의로 지정한 이름으로 다른 것을 사용해도 된다.
@@ -13,8 +14,66 @@ const ALL_MOVIES = gql`
 		allMovies {
 			id
 			title
+			medium_cover_image
 		}
 	}
+`;
+
+const Container = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+`;
+
+const Header = styled.header`
+	background-image: linear-gradient(-45deg, #d754ab, #fd723a);
+	height: 45vh;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+`;
+
+const Title = styled.h1`
+	font-size: 60px;
+	font-weight: 600;
+	margin-bottom: 20px;
+`;
+
+const Loading = styled.div`
+	font-size: 18px;
+	opacity: 0.5;
+	font-weight: 500;
+	margin-top: 10px;
+`;
+
+const MoviesGrid = styled.div`
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-gap: 25px;
+	width: 60%;
+	position: relative;
+	top: -50px;
+`;
+
+const PosterContainer = styled.div`
+	height: 400px;
+	border-radius: 7px;
+	width: 100%;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+	background-color: transparent;
+`;
+
+const PosterBg = styled.div`
+	background-image: url(${(props) => props.background});
+	height: 100%;
+	width: 100%;
+	background-size: cover;
+	background-position: center center;
+	border-radius: 7px;
 `;
 
 export default function Movies() {
@@ -28,18 +87,24 @@ export default function Movies() {
 	그래서 if문으로 단계별로 코드를 구성하면 되는 것이다. loading중이면 Loading..보여주고, error나면 error 보여주고, data가 있으면 data 보여주는 것이다.
 	*/
 	const { data, loading, error } = useQuery(ALL_MOVIES);
-	if (loading) return <h1>Loading...</h1>;
 	if (error) return <h1>Could not fetch..</h1>;
-
+	
 	return (
-		<ul>
-			<h1>Movies List</h1>
-			{data.allMovies.map((movie) => (
-				<li key={movie.id}>
-					<Link to={`/movies/${movie.id}`}>{movie.title}</Link>
-				</li>
-			))}
-		</ul>
+		<Container>
+			<Header>
+				<Title>Apollo Movies</Title>
+			</Header>
+			{loading && <Loading>Loading...</Loading>}
+			<MoviesGrid>
+				{data?.allMovies?.map((movie) => (
+					<PosterContainer key={movie.id}>
+						<Link to={`/movies/${movie.id}`}>
+							<PosterBg background={movie.medium_cover_image} />
+						</Link>
+					</PosterContainer>
+				))}
+			</MoviesGrid>
+		</Container>
 	);
 
 	/* 일반적으로 react의 state를 사용한 코드
