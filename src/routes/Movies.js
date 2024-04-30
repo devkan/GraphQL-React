@@ -3,6 +3,7 @@ import {
 	//useApolloClient,
 	useQuery,
 } from "@apollo/client";
+import { Link } from "react-router-dom";
 //import { useEffect, useState } from "react";
 
 // useQuery hook을 사용하기 위해서 gql을 외부로 뺀다.
@@ -12,13 +13,6 @@ const ALL_MOVIES = gql`
 		allMovies {
 			id
 			title
-		}
-		allBoards {
-			id
-			title
-			author {
-				fullName
-			}
 		}
 	}
 `;
@@ -41,12 +35,8 @@ export default function Movies() {
 		<ul>
 			<h1>Movies List</h1>
 			{data.allMovies.map((movie) => (
-				<li key={movie.id}>{movie.title}</li>
-			))}
-			<h1>Boards List</h1>
-			{data.allBoards.map((board) => (
-				<li key={board.id}>
-					{board.title} by {board.author.fullName}
+				<li key={movie.id}>
+					<Link to={`/movies/${movie.id}`}>{movie.title}</Link>
 				</li>
 			))}
 		</ul>

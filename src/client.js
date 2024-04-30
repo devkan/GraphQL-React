@@ -1,12 +1,13 @@
-import { 
-	ApolloClient, 
-	//gql, 
-	InMemoryCache, 
+import {
+	ApolloClient,
+	//gql,
+	InMemoryCache,
 } from "@apollo/client";
 
 const client = new ApolloClient({
 	uri: "http://localhost:4000",
 	cache: new InMemoryCache(),
+	//connectToDevTools: true, // devtools가 작동하지 않으면 이거 주석을 제거해 보자.
 });
 
 /*
